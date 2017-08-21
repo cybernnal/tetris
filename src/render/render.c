@@ -12,7 +12,7 @@
 
 #include "tetris.h"
 
-static void draw_square(t_window *w, int x, int y, uint32_t color)
+static void     draw_square(t_window *w, int x, int y, uint32_t color)
 {
 	int y2 = SQUARE_SIZE, x2 = 0;
 
@@ -28,37 +28,23 @@ static void draw_square(t_window *w, int x, int y, uint32_t color)
 	}
 }
 
-void    save_time(t_env *e)
+static void     save_time(t_env *e)
 {
     e->current.last_move = clock();
 }
 
-void save_piece(t_env *e)
-{
-    for (int j = 0 ; j < 4 ; j++) {
-        for (int k = 0; k < 4 ; k++)
-        {
-            e->current.comp_p[j][k] = e->p[e->current.p]->piece[j][k];
-        }
-    }
-}
-
-static void pop_piece(t_env *e)
+static void     pop_piece(t_env *e)
 {
 	int r = rand() % 4;
-//	r = 0;
 	int p = rand() % 7;
-//	p = 5;
 	int x = (MAP_X / 2) - 2;
 	int i = 0;
 
 	ft_memset(&e->current, -1, sizeof(t_current));
-
     e->current.p = p;
     e->current.x = x;
     e->current.y = 0;
     e->current.pop = 42;
-
 	while (i < r)
 	{
 		e->p[p] = e->p[p]->next;
@@ -71,50 +57,7 @@ static void pop_piece(t_env *e)
     save_time(e);
 }
 
-void delete_piece(t_env *e)
-{
-	for (int i = 0; i < 4; i++) {
-		if (e->current.y + i < 3)
-			continue;
-		for (int j = 0; j < 4; j++)
-		{
-			if (e->current.comp_p[i][j] > 0)
-				e->map[e->current.y - (3 - i)][e->current.x + j] = 0;
-		}
-	}
-}
-
-static void put_piece(t_env *e)
-{
-	for (int i = 0 ; i < 4 ; i++)
-	{
-		if (e->current.y + i < 3)
-			continue;
-		for (int j = 0 ; j < 4 ; j++)
-		{
-			if (e->current.comp_p[i][j] == 0)
-				continue ;
-			e->map[e->current.y - (3 - i)][e->current.x + j] = e->current.comp_p[i][j];
-		}
-	}
-}
-
-int check_down(t_env *e)
-{
-    for (int i = 0 ; i < 4 ; i++)
-    {
-        if (e->current.y + i < 3)
-			continue;
-        for (int j = 0 ; j < 4 ; j++)
-        {
-            if (e->current.comp_p[i][j] > 0 && (e->current.y - (3 - i) + 1 >= MAP_Y || (e->map[(e->current.y - (3 - i)) + 1][e->current.x + j] > 0 && (i + 1 > 3 || e->current.comp_p[i + 1][j] == 0))))
-                return (1);
-        }
-    }
-	return (0);
-}
-
-static void go_down(t_env *e)
+static void         go_down(t_env *e)
 {
 	if (e->current.y < 4)
 	{
@@ -158,9 +101,7 @@ static void go_down(t_env *e)
     save_time(e);
 }
 
-
-
-static void render_map(t_window *w, t_env *e)
+static void         render_map(t_window *w, t_env *e)
 {
 	int i = 0, j = 0;
 
@@ -179,7 +120,7 @@ static void render_map(t_window *w, t_env *e)
 	}
 }
 
-static void render_other(t_window *w)
+static void         render_other(t_window *w)
 {
     int x0 = X0 - SQUARE_SPACE;
     int x1 = ((MAP_X + 3)  * (SQUARE_SIZE + SQUARE_SPACE))  + SQUARE_SPACE;
@@ -197,7 +138,7 @@ static void render_other(t_window *w)
     }
 }
 
-static void check_line(t_env *e)
+static void         check_line(t_env *e)
 {
     int off = 0;
 
@@ -227,12 +168,11 @@ static void check_line(t_env *e)
     }
 }
 
-static void render_tet(t_window *w, t_env *env)
+static void         render_tet(t_window *w, t_env *env)
 {
 
     if (((float)clock() - (float)env->current.last_move) / (float)CLOCKS_PER_SEC >= env->duration || env->current.down != -1)
     {
-//        printf("clock: %lu, last: %lu, calc: %f, duration: %f\n", clock(), env->current.last_move, ((float)clock() - (float)env->current.last_move) / (float)CLOCKS_PER_SEC, env->duration);
         if (env->current.pop < 0)
             pop_piece(env);
         else

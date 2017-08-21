@@ -82,7 +82,7 @@ set(SOURCE_FILES
     src/main.c
     src/render/draw_pixel.c
     src/audio.c
-    )
+        src/render/piece_tools.c)
 
 add_executable(tetris ${SOURCE_FILES})
 

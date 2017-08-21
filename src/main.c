@@ -11,43 +11,10 @@
 /* ************************************************************************** */
 
 #include "tetris.h"
-#include <stdio.h>
-#include "audio.h"
-
-void print_tlst(t_piece **p)
-{
-    int i = 0; int j = 0; int k = 0;
-
-    while (k < 7)
-    {
-        while (p[k]->next)
-        {
-            while (i < 4)
-            {
-                while (j < 4)
-                {
-                    ft_putnbr(p[k]->piece[i][j]);
-                    j++;
-                }
-                ft_putendl("");
-                j = 0;
-                i++;
-            }
-            ft_putendl("");
-            i = 0;
-            p[k] = p[k]->next;
-            if (p[k]->n == 0)
-                break ;
-        }
-        ft_putendl("=============");
-        k++;
-    }
-}
 
 void    init_env(t_env *env)
 {
     ft_bzero(env, sizeof(t_env));
-//	init_tet(env);
     init_lst(env);
     env->duration = 0.5;
 	ft_memset(&env->current, -1, sizeof(t_current));

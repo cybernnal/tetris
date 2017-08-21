@@ -13,12 +13,12 @@
 #include "audio.h"
 #include "tetris.h"
 
-int ft_exit(t_env *e)
+int             ft_exit(t_env *e)
 {
     exit (0);
 }
 
-int ft_mute(t_env *e)
+int             ft_mute(t_env *e)
 {
     if (e->mute == 0)
     {
@@ -33,74 +33,7 @@ int ft_mute(t_env *e)
     return (0);
 }
 
-static void put_piece(t_env *e)
-{
-    for (int i = 0 ; i < 4 ; i++)
-    {
-        if (e->current.y + i < 3)
-            continue;
-        for (int j = 0 ; j < 4 ; j++)
-        {
-            if (e->current.comp_p[i][j] == 0)
-                continue ;
-            e->map[e->current.y - (3 - i)][e->current.x + j] = e->current.comp_p[i][j];
-        }
-    }
-}
-
-static int check_right(t_env *env)
-{
-    for (int i = 0 ; i < 4 ; i++)
-    {
-        for (int j = 0 ; j < 4 ; j++)
-        {
-            if (env->current.comp_p[i][j] > 0 && (env->current.x + j + 1 >= MAP_X || (env->map[env->current.y - (3 - i)][env->current.x + j + 1] > 0 && (j + 1 > 3 || env->current.comp_p[i][j + 1] == 0))))
-                return (1);
-        }
-    }
-    return (0);
-}
-
-static int check_left(t_env *env)
-{
-    for (int i = 0 ; i < 4 ; i++)
-    {
-        for (int j = 0 ; j < 4 ; j++)
-        {
-            if (env->current.comp_p[i][j] > 0 && (env->current.x + j - 1 < 0 || (env->map[env->current.y - (3 - i)][env->current.x + j - 1] > 0 && (j - 1 < 0 || env->current.comp_p[i][j - 1] == 0))))
-                return (1);
-        }
-    }
-    return (0);
-}
-
-static int check_rleft(t_env *env, uint32_t piece[4][4])
-{
-    for (int i = 0 ; i < 4 ; i++)
-    {
-        for (int j = 0 ; j < 4 ; j++)
-        {
-            if (piece[i][j] > 0 && (env->current.x + j < 0 || (env->map[env->current.y - (3 - i)][env->current.x + j] > 0 && (j < 0 || piece[i][j] == 0))))
-                return (1);
-        }
-    }
-    return (0);
-}
-
-static int check_rright(t_env *env, uint32_t piece[4][4])
-{
-    for (int i = 0 ; i < 4 ; i++)
-    {
-        for (int j = 0 ; j < 4 ; j++)
-        {
-            if (piece[i][j] > 0 && (env->current.x + j >= MAP_X || (env->map[env->current.y - (3 - i)][env->current.x + j] > 0 && (j > 3 || piece[i][j] == 0))))
-                return (1);
-        }
-    }
-    return (0);
-}
-
-static int check_rotate(t_env *env) // TODO check botom for rotate, rotate or not
+static int      check_rotate(t_env *env) // TODO check botom for rotate, rotate or not
 {
     t_piece *p = env->p[env->current.p]->next;
     int     x = env->current.x;
@@ -135,7 +68,7 @@ static int check_rotate(t_env *env) // TODO check botom for rotate, rotate or no
     return (1);
 }
 
-int ft_rotate(t_env *env) // TODO fix rotation (if rotate next to the wall or other piece) conflict!!
+int         ft_rotate(t_env *env) // TODO fix rotation (if rotate next to the wall or other piece) conflict!!
 {
     if (env->current.y < 3)
         return (0);
@@ -150,7 +83,7 @@ int ft_rotate(t_env *env) // TODO fix rotation (if rotate next to the wall or ot
     return (1);
 }
 
-int ft_left(t_env *env)
+int         ft_left(t_env *env)
 {
     if (env->current.y < 3)
         return (0);
@@ -164,7 +97,7 @@ int ft_left(t_env *env)
     return (1);
 }
 
-int ft_right(t_env *env)
+int         ft_right(t_env *env)
 {
     if (env->current.y < 3)
         return (0);
@@ -178,7 +111,7 @@ int ft_right(t_env *env)
     return (1);
 }
 
-int ft_down(t_env *env)
+int         ft_down(t_env *env)
 {
     env->current.down = 1;
     return (0);

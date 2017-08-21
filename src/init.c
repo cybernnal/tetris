@@ -18,7 +18,7 @@ void        init_window(t_window *window)
 	init_texture_renderer(window, WIN_X, WIN_Y);
 }
 
-void	init_lst(t_env *e)
+void	    init_lst(t_env *e)
 {
 	t_piece **piece = (t_piece**)ft_memalloc(sizeof(t_piece*) * 7);
 	t_piece *tmp;
