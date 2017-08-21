@@ -74,8 +74,8 @@ set(SOURCE_FILES
     libft/get_next_line.c
     libft/get_next_line.h
     libft/libft.h
-    src/key_kook/hook_init.c
-    src/key_kook/key_hook.c
+    src/key_hook/hook_init.c
+    src/key_hook/key_hook.c
     src/render/render.c
     src/error.c
     src/init.c

@@ -117,6 +117,18 @@ int         ft_down(t_env *env)
     return (0);
 }
 
+int         ft_change_music(t_env *env)
+{
+    endAudio();
+    initAudio();
+   if (env->music == 0)
+       playMusic("../resource/Tetris_ah.wav", SDL_MIX_MAXVOLUME);
+   if (env->music == 1)
+        playMusic("../resource/Tetris.wav", SDL_MIX_MAXVOLUME);
+    env->music = !env->music;
+    return (1);
+}
+
 void		ft_tab_ft_init_1(int (**tab_ft)(t_env*))
 {
 	tab_ft[SDLK_ESCAPE] = &ft_exit;
@@ -126,6 +138,7 @@ void		ft_tab_ft_init_1(int (**tab_ft)(t_env*))
     tab_ft[SDLK_a] = &ft_left;
     tab_ft[SDLK_d] = &ft_right;
     tab_ft[SDLK_SPACE] = &ft_down;
+    tab_ft[SDLK_i] = &ft_change_music;
 }
 
 int		nil(t_env *env)

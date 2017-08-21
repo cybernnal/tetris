@@ -73,6 +73,7 @@ typedef struct		    s_env
     uint32_t            map[MAP_Y][MAP_X];
     struct s_current    current;
 	int 				mute;
+	int 				music;
     float               duration;
 }			    		t_env;
 
