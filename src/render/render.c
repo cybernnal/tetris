@@ -99,7 +99,7 @@ static void put_piece(t_env *e)
 	}
 }
 
-static int check_down(t_env *e)
+int check_down(t_env *e)
 {
     for (int i = 0 ; i < 4 ; i++)
     {
@@ -111,31 +111,27 @@ static int check_down(t_env *e)
                 return (1);
         }
     }
-//
-//    for (int i = 0; i < 4; i++) {
-//		if (e->current.y + i < 3)
-//			continue;
-//
-//		for (int j = 0; j < 4; j++)
-//		{
-//			if (e->current.comp_p[i][j] > 0 && (i == 3 || e->current.comp_p[i + 1][j] == 0) && e->map[(e->current.y - (3 - i)) + 1][e->current.x + j] > 0)
-//            {
-//                return (1);
-//            }
-//			if (e->current.y + 1 >= MAP_Y)
-//				return (1);
-//		}
-//	}
 	return (0);
 }
 
-static void go_down(t_env *e) // TODO add time
+static void go_down(t_env *e)
 {
 	if (e->current.y < 4)
 	{
 		if (check_down(e) == 1)
 		{
 			ft_putendl("game over");
+            for (int i = 0 ; i < MAP_Y ; i++)
+            {
+                for (int j = 0 ; j < MAP_X ; j++)
+                {
+                    if (e->map[i][j])
+                        printf("%d ", 1);
+                    else
+                        printf("%d ", 0);
+                }
+                printf("\n");
+            }
 			exit(0);
 		}
 		delete_piece(e);
@@ -144,6 +140,13 @@ static void go_down(t_env *e) // TODO add time
         save_time(e);
 		return;
 	}
+    if (check_down(e) == 1)
+    {
+        e->current.down = -1;
+        e->current.pop = -1;
+        pop_piece(e);
+        return;
+    }
 	delete_piece(e);
 	e->current.y++;
 	put_piece(e);
@@ -157,7 +160,7 @@ static void go_down(t_env *e) // TODO add time
 
 
 
-static void render_map(t_window *w, t_env *e)// TODO marche pas // peu etre que si
+static void render_map(t_window *w, t_env *e)
 {
 	int i = 0, j = 0;
 
