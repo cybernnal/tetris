@@ -80,6 +80,8 @@ int         ft_rotate(t_env *env) // TODO fix rotation (if rotate next to the wa
         save_piece(env);
     }
     put_piece(env);
+    if (check_down(env) == 0)
+        env->current.pop = 0;
     return (1);
 }
 
