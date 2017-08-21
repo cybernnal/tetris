@@ -64,17 +64,6 @@ static void         go_down(t_env *e)
 		if (check_down(e) == 1)
 		{
 			ft_putendl("game over");
-            for (int i = 0 ; i < MAP_Y ; i++)
-            {
-                for (int j = 0 ; j < MAP_X ; j++)
-                {
-                    if (e->map[i][j])
-                        printf("%d ", 1);
-                    else
-                        printf("%d ", 0);
-                }
-                printf("\n");
-            }
 			exit(0);
 		}
 		delete_piece(e);

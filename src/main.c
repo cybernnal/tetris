@@ -34,7 +34,7 @@ int		main(int argc, char  **argv)
 		return 1;
 	}
 	initAudio();
-	playMusic("../Tetris.wav", SDL_MIX_MAXVOLUME); // TODO uncomment
+	playMusic("../resource/Tetris.wav", SDL_MIX_MAXVOLUME); // TODO uncomment
 	   while (render(&env));
 	return (0);
 }
