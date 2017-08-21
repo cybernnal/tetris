@@ -131,6 +131,8 @@ static void         check_line(t_env *e)
 {
     int off = 0;
 
+    if (check_down(e) == 0)
+        return;
     for (int i = MAP_Y - 1 ; i >= 0 ; i--)
     {
         int is_full = 0;
@@ -167,9 +169,9 @@ static void         render_tet(t_window *w, t_env *env)
         else
             go_down(env);
     }
-	render_map(w, env);
-    render_other(w);
     check_line(env);
+    render_map(w, env);
+    render_other(w);
 //	printf("current: x: %d, y: %d, p: %d\n", env->current.x, env->current.y, env->current.p);
 }
 
