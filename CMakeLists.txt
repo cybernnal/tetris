@@ -82,7 +82,7 @@ set(SOURCE_FILES
     src/main.c
     src/render/draw_pixel.c
     src/audio.c
-        src/render/piece_tools.c)
+    src/render/piece_tools.c)
 
 add_executable(tetris ${SOURCE_FILES})
 
@@ -91,5 +91,7 @@ include_directories(libft)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${tetris_SOURCE_DIR}/cmake")
 find_package(SDL2 REQUIRED)
+find_package(sdl_ttf)
 include_directories(${SDL2_INCLUDE_DIR})
+include_directories(${sdl_ttf_INCLUDE_DIR})
 target_link_libraries(tetris ${SDL2_LIBRARY} -lm)

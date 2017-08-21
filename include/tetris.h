@@ -23,6 +23,7 @@
 #define WIN_Y   1050
 #define MARGE   10
 
+#include <SDL_ttf.h>
 #define WIN_X1   WIN_X - MARGE
 #define WIN_Y1   WIN_Y - MARGE
 

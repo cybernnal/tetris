@@ -13,4 +13,27 @@ add level
 add "pause"
 
 
-add multilayer on lan
+add multilayer on lan:
+
+client:
+
+        connect to server
+        enter psedo
+        wait all client (server or client start game)
+        send piece popped
+        send all move
+        send score
+        send if doing line
+        retrieve line from server if other player do more than 2 line
+
+        retrieve other screen ???
+
+server:
+
+        fork for let a client to play
+        retrieve psedo
+        wait all client
+        save all client's map? check for cheat?
+        send score to other client ?
+        send map to other client?
+        retrieve line from client and send if needed random line to over

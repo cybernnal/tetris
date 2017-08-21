@@ -230,9 +230,9 @@ static void appserv(void)
     clear_clients(clients, actual);
     end_connection(sock);
 }
-//
-//int main(int argc, char **argv)
-//{
-//    appserv();
-//    return EXIT_SUCCESS;
-//}
+
+int main(int argc, char **argv)
+{
+    appserv();
+    return EXIT_SUCCESS;
+}
