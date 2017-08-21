@@ -49,14 +49,15 @@ void    init_env(t_env *env)
     ft_bzero(env, sizeof(t_env));
 //	init_tet(env);
     init_lst(env);
+    env->duration = 0.1;
 	ft_memset(&env->current, -1, sizeof(t_current));
+    env->current.last_move = 0;
 }
 
 int		main(int argc, char  **argv)
 {
 	t_env	env;
 
-	int i = 0, j = 0, k = 0;
 	if (argc < 1)
 		ft_error("too few args");
     init_env(&env);
@@ -66,7 +67,7 @@ int		main(int argc, char  **argv)
 		return 1;
 	}
 	initAudio();
-	playMusic("../Tetris.wav", SDL_MIX_MAXVOLUME);
+	playMusic("../Tetris.wav", SDL_MIX_MAXVOLUME); // TODO uncomment
 	   while (render(&env));
 	return (0);
 }

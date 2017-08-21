@@ -48,9 +48,40 @@ static void put_piece(t_env *e)
     }
 }
 
+static int check_right(t_env *e)
+{
+    for (int j = 3 ; j >= 0 ; j--)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (e->current.comp_p[i][j] > 0)
+                return (j);
+
+        }
+    }
+    ft_putendl("error in check right");
+    return (0);
+}
+
+
+static int check_left(t_env *e)
+{
+    for (int j = 0 ; j < 4 ; j++)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (e->current.comp_p[i][j] > 0)
+                return (j);
+
+        }
+    }
+    ft_putendl("error in check left");
+    return (0);
+}
+
 int ft_rotate(t_env *env)
 {
-    if (env->current.y < 4)
+    if (env->current.y < 3)
         return (0);
     ft_putendl("ROTATE");
     delete_piece(env);
@@ -62,12 +93,18 @@ int ft_rotate(t_env *env)
 
 int ft_left(t_env *env)
 {
-
-    if (env->current.y < 4)
+    if (env->current.y < 3)
         return (0);
+    for (int i = 0 ; i < 4 ; i++)
+    {
+        for (int j = 0 ; j < 4 ; j++)
+        {
+            if (env->current.comp_p[i][j] > 0 && (env->current.x + j - 1 < 0 || (env->map[env->current.y - (3 - i)][env->current.x + j - 1] > 0 && (j - 1 < 0 || env->current.comp_p[i][j - 1] == 0))))
+                return (0);
+        }
+    }
     delete_piece(env);
-    if (env->current.x > 0) // TODO not good
-        env->current.x--;
+    env->current.x--;
     put_piece(env);
     return (1);
 }
@@ -75,12 +112,20 @@ int ft_left(t_env *env)
 
 int ft_right(t_env *env)
 {
-
-    if (env->current.y < 4)
+    if (env->current.y < 3)
         return (0);
+    for (int i = 0 ; i < 4 ; i++)
+    {
+        for (int j = 0 ; j < 4 ; j++)
+        {
+            if (env->current.comp_p[i][j] > 0 && (env->current.x + j + 1 >= MAP_X || (env->map[env->current.y - (3 - i)][env->current.x + j + 1] > 0 && (j + 1 > 3 || env->current.comp_p[i][j + 1] == 0))))
+                return (0);
+        }
+    }
+
     delete_piece(env);
-    if (env->current.x + 4 < MAP_X) // TODO not good
-        env->current.x++;
+//    if (env->current.x + 4 < MAP_X) // TODO not good
+    env->current.x++;
     put_piece(env);
     return (1);
 }

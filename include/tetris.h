@@ -43,7 +43,7 @@
 //#define SQUARE_SIZE (int)L_CF(1, 0, MAP_X, 0, WIN_X1)
 
 
-#define SQUARE_SIZE 25
+#define SQUARE_SIZE 30
 #define SQUARE_SPACE 5
 
 typedef float         t_tet;
@@ -81,6 +81,8 @@ typedef struct      s_current
     int             y;
     int             pop;
 	int 			down;
+    long unsigned int          last_move;
+
 }                   t_current;
 
 typedef struct		s_env
@@ -89,6 +91,7 @@ typedef struct		s_env
     uint32_t               map[MAP_Y][MAP_X];
     struct s_current    current;
 	int 				mute;
+    float               duration;
 }			    		    t_env;
 
 void			init_lst(t_env *e);

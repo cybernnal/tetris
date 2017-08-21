@@ -10,7 +10,7 @@ static void init_texture_renderer(t_window *win, int w, int h)
 void        init_window(t_window *window)
 {
 	SDL_Init(SDL_INIT_VIDEO);
-	if (!(window->window = SDL_CreateWindow("fdf", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+	if (!(window->window = SDL_CreateWindow("Tetris", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 					WIN_X, WIN_Y, SDL_WINDOW_SHOWN)))
 		exit(EXIT_FAILURE);
 	if (!(window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_ACCELERATED)))

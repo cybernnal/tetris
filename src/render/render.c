@@ -28,6 +28,11 @@ static void draw_square(t_window *w, int x, int y, uint32_t color)
 	}
 }
 
+void    save_time(t_env *e)
+{
+    e->current.last_move = clock();
+}
+
 void save_piece(t_env *e)
 {
     for (int j = 0 ; j < 4 ; j++) {
@@ -66,6 +71,7 @@ static void pop_piece(t_env *e)
 	for (int j = 0 ; j < 4 ; j++) {
 		e->map[0][x + j] = e->p[p]->piece[0][j];
 	}
+    save_time(e);
 }
 
 void delete_piece(t_env *e)
@@ -98,21 +104,31 @@ static void put_piece(t_env *e)
 
 static int check_down(t_env *e)
 {
-	for (int i = 0; i < 4; i++) {
-		if (e->current.y + i < 3)
+    for (int i = 0 ; i < 4 ; i++)
+    {
+        if (e->current.y + i < 3)
 			continue;
-		for (int j = 0; j < 4; j++)
-		{
-			if (e->current.comp_p[i][j] > 0 && (i == 3 || e->current.comp_p[i + 1][j] == 0) && e->map[(e->current.y - (3 - i)) + 1][e->current.x + j] > 0)
-            {
-                printf("i: %d, j: %d, e->cur y: %d\n", i, j, e->current.y);
-
+        for (int j = 0 ; j < 4 ; j++)
+        {
+            if (e->current.comp_p[i][j] > 0 && (e->current.y - (3 - i) + 1 >= MAP_Y || (e->map[(e->current.y - (3 - i)) + 1][e->current.x + j] > 0 && (i + 1 > 3 || e->current.comp_p[i + 1][j] == 0))))
                 return (1);
-            }
-			if (e->current.y + 1 >= MAP_Y)
-				return (1);
-		}
-	}
+        }
+    }
+//
+//    for (int i = 0; i < 4; i++) {
+//		if (e->current.y + i < 3)
+//			continue;
+//
+//		for (int j = 0; j < 4; j++)
+//		{
+//			if (e->current.comp_p[i][j] > 0 && (i == 3 || e->current.comp_p[i + 1][j] == 0) && e->map[(e->current.y - (3 - i)) + 1][e->current.x + j] > 0)
+//            {
+//                return (1);
+//            }
+//			if (e->current.y + 1 >= MAP_Y)
+//				return (1);
+//		}
+//	}
 	return (0);
 }
 
@@ -128,6 +144,7 @@ static void go_down(t_env *e) // TODO add time
 		delete_piece(e);
 		e->current.y++;
 		put_piece(e);
+        save_time(e);
 		return;
 	}
 	delete_piece(e);
@@ -138,6 +155,7 @@ static void go_down(t_env *e) // TODO add time
 		e->current.down = -1;
 		e->current.pop = -1;
 	}
+    save_time(e);
 }
 
 
@@ -152,7 +170,7 @@ static void render_map(t_window *w, t_env *e)// TODO marche pas // peu etre que 
 		{
 			if (e->map[i][j] > 0)
 			{
-				draw_square(w, X0 + ((j + 1) * (SQUARE_SIZE + SQUARE_SPACE)), Y0 +  ((i + 1) * (SQUARE_SIZE + SQUARE_SPACE)), e->map[i][j]);
+				draw_square(w, X0 + ((j) * (SQUARE_SIZE + SQUARE_SPACE)), Y0 +  ((i + 1) * (SQUARE_SIZE + SQUARE_SPACE)), e->map[i][j]);
 			}
 			j++;
 		}
@@ -181,14 +199,19 @@ static void render_other(t_window *w)
 
 static void render_tet(t_window *w, t_env *env)
 {
-	if (env->current.pop < 0)
-		pop_piece(env);
-	else
-		go_down(env);
+
+    if (((float)clock() - (float)env->current.last_move) / (float)CLOCKS_PER_SEC >= env->duration || env->current.down != -1)
+    {
+//        printf("clock: %lu, last: %lu, calc: %f, duration: %f\n", clock(), env->current.last_move, ((float)clock() - (float)env->current.last_move) / (float)CLOCKS_PER_SEC, env->duration);
+        if (env->current.pop < 0)
+            pop_piece(env);
+        else
+            go_down(env);
+    }
 	render_map(w, env);
     render_other(w);
 
-	printf("current: x: %d, y: %d, p: %d\n", env->current.x, env->current.y, env->current.p);
+//	printf("current: x: %d, y: %d, p: %d\n", env->current.x, env->current.y, env->current.p);
 }
 
 int					render(t_env *env)
@@ -207,7 +230,5 @@ int					render(t_env *env)
 	SDL_UpdateTexture(w.image, NULL, w.img_ptr, WIN_X * sizeof(Uint32));
 	SDL_RenderCopy(w.renderer, w.image, NULL, NULL);
 	SDL_RenderPresent(w.renderer);
-	if (env->current.down == -1)
-		sleep(1);
 	return (1);
 }
