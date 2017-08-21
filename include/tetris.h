@@ -43,7 +43,7 @@
 //#define SQUARE_SIZE (int)L_CF(1, 0, MAP_X, 0, WIN_X1)
 
 
-#define SQUARE_SIZE 30
+#define SQUARE_SIZE 36
 #define SQUARE_SPACE 5
 
 typedef float         t_tet;
@@ -100,6 +100,7 @@ void               init_window(t_window *window);
 int                render(t_env *env);
 int					ft_error(char *str);
 void delete_piece(t_env *e);
+int check_down(t_env *e);
 void    init_current(t_env *e);
 void	init_tet(t_env *e);
 int		key_hook(SDL_Event k, t_env *e);
