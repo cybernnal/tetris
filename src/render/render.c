@@ -52,9 +52,6 @@ static void pop_piece(t_env *e)
 	int x = (MAP_X / 2) - 2;
 	int i = 0;
 
-
-
-    printf("rotation: %d\n", r);
 	ft_memset(&e->current, -1, sizeof(t_current));
 
     e->current.p = p;
@@ -197,6 +194,36 @@ static void render_other(t_window *w)
     }
 }
 
+static void check_line(t_env *e)
+{
+    int off = 0;
+
+    for (int i = MAP_Y - 1 ; i >= 0 ; i--)
+    {
+        int is_full = 0;
+
+        for (int j = 0 ; j < MAP_X ; j++)
+        {
+            if (e->map[i][j] == 0)
+            {
+                is_full = -1;
+                break ;
+            }
+        }
+        if (is_full >= 0)
+        {
+            for (int j = 0 ; j < MAP_X ; j++)
+                e->map[i][j] = 0;
+            off++;
+        }
+        else
+        {
+            for (int j = 0 ; j < MAP_X ; j++)
+                e->map[i + off][j] = e->map[i][j];
+        }
+    }
+}
+
 static void render_tet(t_window *w, t_env *env)
 {
 
@@ -210,7 +237,7 @@ static void render_tet(t_window *w, t_env *env)
     }
 	render_map(w, env);
     render_other(w);
-
+    check_line(env);
 //	printf("current: x: %d, y: %d, p: %d\n", env->current.x, env->current.y, env->current.p);
 }
 

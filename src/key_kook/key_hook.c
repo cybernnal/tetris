@@ -29,7 +29,19 @@ int				key_hook(SDL_Event k, t_env *e)
 	if (!t_hook[0]) {
 		ft_tab_ft_init(t_hook);
 	}
-	if (k.key.keysym.sym >= 150 || k.key.keysym.sym < 0)
+    if (k.key.type == SDL_KEYDOWN) {
+
+        if (k.key.keysym.sym == SDLK_DOWN)
+            t_hook[SDLK_s](e);
+        else if (k.key.keysym.sym == SDLK_LEFT)
+            t_hook[SDLK_a](e);
+        else if (k.key.keysym.sym == SDLK_RIGHT)
+            t_hook[SDLK_d](e);
+        else if (k.key.keysym.sym == SDLK_UP)
+            t_hook[SDLK_w](e);
+    }
+
+    if (k.key.keysym.sym >= 150 || k.key.keysym.sym < 0)
 		return (0);
 	if (k.key.type == SDL_KEYDOWN) {
 //		printf("key: %d\n", k.key.keysym.sym);

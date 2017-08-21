@@ -79,11 +79,10 @@ static int check_left(t_env *e)
     return (0);
 }
 
-int ft_rotate(t_env *env)
+int ft_rotate(t_env *env) // TODO fix rotation (if rotate next to the wall or other piece) conflict!!
 {
     if (env->current.y < 3)
         return (0);
-    ft_putendl("ROTATE");
     delete_piece(env);
     env->p[env->current.p] = env->p[env->current.p]->next;
     save_piece(env);
@@ -144,6 +143,7 @@ void		ft_tab_ft_init_1(int (**tab_ft)(t_env*))
     tab_ft[SDLK_w] = &ft_rotate;
     tab_ft[SDLK_a] = &ft_left;
     tab_ft[SDLK_d] = &ft_right;
+    tab_ft[SDLK_SPACE] = &ft_down;
 }
 
 int		nil(t_env *env)
