@@ -13,101 +13,6 @@
 #include "audio.h"
 #include "tetris.h"
 
-
-static void  rotate(t_env *e, int p, int r)
-{
-    int i = 0, j = 0;
-
-    if (r == 0)
-    {
-        while (i < 4)
-        {
-            while (j < 4)
-            {
-                e->current.comp_p[i][j] = e->piece[p][i][j];
-                j++;
-            }
-            j = 0;
-            i++;
-        }
-    }
-    if (r == 1)
-    {
-        while (i < 4)
-        {
-            while (j < 4)
-            {
-                e->current.comp_p[j][3 - i] = e->piece[p][i][j];
-                j++;
-            }
-            j = 0;
-            i++;
-        }
-    }
-    if (r == 2)
-    {
-        while (i < 4)
-        {
-            while (j < 4)
-            {
-                e->current.comp_p[3 - j][3 - i] = e->piece[p][i][j];
-                j++;
-            }
-            j = 0;
-            i++;
-        }
-    }
-    if (r == 3)
-    {
-        while (i < 4)
-        {
-            while (j < 4)
-            {
-                e->current.comp_p[3 - j][i] = e->piece[p][i][j];
-                j++;
-            }
-            j = 0;
-            i++;
-        }
-    }
-}
-
-static void delete_piece(t_env *e)
-{
-    for (int i = e->current.i ; i >= 0 ; i--)
-    {
-        if (e->current.y - (e->current.i - i) < 0)
-            continue ;
-        for (int j = 0 ; j < 4 ; j++) // TODO piece pas sortit 4 c'est trop ||| 4 - j
-        {
-            if (e->current.comp_p[i][j] > 0)
-                e->map[(e->current.y - (e->current.i - i))][e->current.x + j] = 0;
-        }
-    }
-
-//    for (int i = e->current.i ; i >= 0 ; i--)
-//    {
-//        for (int j = 0; j < 4 ; j++)
-//        {
-//            if (e->current.comp_p[i][j] > 0)
-//                e->map[e->current.y - (e->current.i - i)][e->current.x + i] = 0;
-//        }
-//    }
-}
-
-
-static void put_piece(t_env *e)
-{
-    for (int i = e->current.i ; i >= 0 ; i--)
-    {
-        for (int j = 0; j < 4 ; j++)
-        {
-            if (e->current.comp_p[i][j] > 0)
-                e->map[e->current.y - (e->current.i - i)][e->current.x + i] = e->current.comp_p[i][j];
-        }
-    }
-}
-
 int ft_exit(t_env *e)
 {
     exit (0);
@@ -128,31 +33,55 @@ int ft_mute(t_env *e)
     return (0);
 }
 
+static void put_piece(t_env *e)
+{
+    for (int i = 0 ; i < 4 ; i++)
+    {
+        if (e->current.y + i < 3)
+            continue;
+        for (int j = 0 ; j < 4 ; j++)
+        {
+            if (e->current.comp_p[i][j] == 0)
+                continue ;
+            e->map[e->current.y - (3 - i)][e->current.x + j] = e->current.comp_p[i][j];
+        }
+    }
+}
+
 int ft_rotate(t_env *env)
 {
+    if (env->current.y < 4)
+        return (0);
+    ft_putendl("ROTATE");
     delete_piece(env);
-    env->current.rotate = (env->current.rotate + 1) % 4;
-    rotate(env, env->current.p, env->current.rotate);
-//    put_piece(env);
+    env->p[env->current.p] = env->p[env->current.p]->next;
+    save_piece(env);
+    put_piece(env);
     return (1);
 }
 
 int ft_left(t_env *env)
 {
+
+    if (env->current.y < 4)
+        return (0);
     delete_piece(env);
     if (env->current.x > 0) // TODO not good
         env->current.x--;
-//    put_piece(env);
+    put_piece(env);
     return (1);
 }
 
 
 int ft_right(t_env *env)
 {
+
+    if (env->current.y < 4)
+        return (0);
     delete_piece(env);
-    if (env->current.x < MAP_X) // TODO not good
+    if (env->current.x + 4 < MAP_X) // TODO not good
         env->current.x++;
-//    put_piece(env);
+    put_piece(env);
     return (1);
 }
 

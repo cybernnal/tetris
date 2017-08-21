@@ -65,14 +65,19 @@ typedef struct                  s_window
     int                     is_init;
 }                           t_window;
 
+typedef struct 				s_piece
+{
+	uint32_t 					piece[4][4];
+	int 					n;
+	struct s_piece			*next;
+}							t_piece;
+
 typedef struct      s_current
 {
-    char            comp_p[4][4];
-    char            *piece;
+    uint32_t            comp_p[4][4];
+    uint32_t        color;
     int             p;
-    int             rotate;
-    int             i;
-    int             x;
+	int             x;
     int             y;
     int             pop;
 	int 			down;
@@ -80,22 +85,23 @@ typedef struct      s_current
 
 typedef struct		s_env
 {
-    char                piece[7][4][4];
-    char                map[MAP_Y][MAP_X];
+	struct s_piece		**p;
+    uint32_t               map[MAP_Y][MAP_X];
     struct s_current    current;
 	int 				mute;
 }			    		    t_env;
 
+void			init_lst(t_env *e);
 void    			init_env(t_env *env);
 void               init_window(t_window *window);
 int                render(t_env *env);
 int					ft_error(char *str);
-
+void delete_piece(t_env *e);
 void    init_current(t_env *e);
 void	init_tet(t_env *e);
 int		key_hook(SDL_Event k, t_env *e);
 void		ft_tab_ft_init_1(int (**tab_ft)(t_env*));
-
+void save_piece(t_env *e);
 void draw_pixel(int x, int y, Uint32 color, t_window *w);
 int     nil(t_env *env);
 
