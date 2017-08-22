@@ -18,7 +18,7 @@ void    init_env(t_env *env)
 {
     ft_bzero(env, sizeof(t_env));
     init_lst(env);
-    env->duration = 0.1;
+    env->duration = 0.5;
 	ft_memset(&env->current, -1, sizeof(t_current));
     env->current.last_move = 0;
 	env->psedo = (char*)ft_memalloc(sizeof(char) * PSEDO_LEN);

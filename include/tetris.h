@@ -101,6 +101,9 @@ typedef struct          s_current
 typedef struct		    s_env
 {
     int                 pid;
+    int                 line;
+    int                 score;
+    int                 lvl;
     char                *address;
     int                 is_client;
     char                *psedo;
@@ -110,6 +113,7 @@ typedef struct		    s_env
 	int 				mute;
     float               duration;
     Client              client;
+    int                 music;
 }			    		t_env;
 
 void			        init_lst(t_env *e);

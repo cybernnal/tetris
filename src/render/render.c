@@ -258,6 +258,27 @@ static void         check_line(t_env *e)
                 e->map[i + off][j] = e->map[i][j];
         }
     }
+    if (off)
+    {
+        switch (off)
+        {
+            case 1 :
+                e->score += 40 * (e->lvl + 1);
+                break;
+            case 2 :
+                e->score += 100 * (e->lvl + 1);
+                break;
+            case 3 :
+                e->score += 300 * (e->lvl + 1);
+                break;
+            case 4 :
+                e->score += 300 * (e->lvl + 1);
+                break;
+            default:
+                break;
+        }
+        printf("score: %d\n", e->score);
+    }
     if (e->is_client) // TODO keep 2 or put 1 for send to server?
     {
         if (off >= 2) {
@@ -268,7 +289,7 @@ static void         check_line(t_env *e)
             ft_memdel((void**)&tmp);
         }
     }
-
+    e->line += off;
 }
 
 static void         render_tet(t_window *w, t_env *env)
@@ -287,6 +308,13 @@ static void         render_tet(t_window *w, t_env *env)
     if (env->is_client)
     {
         check_serv(env->client.sock, env);
+    }
+    else if (env->line != 0 && env->line % 10 == 0)
+    {
+        env->duration -= env->duration / 3;
+        env->lvl++;
+        env->line = 0;
+        ft_putendl("lvl up!!!");
     }
 //	printf("current: x: %d, y: %d, p: %d\n", env->current.x, env->current.y, env->current.p);
 }
