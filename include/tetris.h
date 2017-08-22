@@ -25,7 +25,7 @@
 //#include <SDL_ttf.h>
 
 #include <netdb.h>
-#define WIN_X   900
+#define WIN_X   1100
 #define WIN_Y   1050
 
 #define MARGE   10

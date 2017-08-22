@@ -21,10 +21,10 @@ client:
         enter psedo // TODO DONE
         connect to server // TODO DONE
         wait all client (server or client start game) // TODO DONE
+        retrieve line from server if other player do more than 2 line // TODO DONE
         send all move ??
         send score !!
         send if doing line
-        retrieve line from server if other player do more than 2 line
 
         retrieve other screen ???
 
@@ -34,13 +34,13 @@ server:
         retrieve psedo // TODO DONE
         wait all client // TODO DONE
         send piece to client // TODO DONE
+        retrieve line from client and send if needed random line to over // TODO DONE
         give time to clien to start all
         check client with special key?
         save all client's map?
         check for cheat?
         send score to other client ?
         send map to other client?
-        retrieve line from client and send if needed random line to over
         kill correctly the server
         error bind address already used
         if clien disconect keep all the game, delete just him

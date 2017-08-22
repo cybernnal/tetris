@@ -173,7 +173,7 @@ static void         add_line(t_env *e, int l)
         if (r == i)
             break ;
     }
-    for (int i = r; i < MAP_Y - l ; i++)
+    for (int i = r; i < MAP_Y ; i++)
     {
         for (int j = 0 ; j < MAP_X ; j++)
         {
