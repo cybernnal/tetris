@@ -33,6 +33,7 @@ server:
         retrieve psedo // TODO DONE
         wait all client // TODO DONE
         send piece to client // TODO DONE
+        give time to clien to start all
         check client with special key?
         save all client's map?
         check for cheat?

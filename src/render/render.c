@@ -45,12 +45,12 @@ static void     pop_piece(t_env *e)
 	if (e->is_client == 1)
 	{
 		write_server(e->client.sock, "gmp");
-        ft_putendl("ask to serv to send piece");
+//        ft_putendl("ask to serv to send piece");
         read_server(e->client.sock, buf);
-        ft_putendl("piece receded");
+//        ft_putendl("piece receded");
         buf[2] = 0;
-        p = buf[0];
-        r = buf[1];
+        p = buf[0] - 1;
+        r = buf[1] - 1;
 	}
 	else
 	{

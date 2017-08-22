@@ -70,14 +70,14 @@ int		main(int argc, char  **argv)
 			printf("Please enter your psedo (max 10 char): ");
 			scanf("%s", env.psedo);
 			env.is_client = 1;
-//            env.client.name = env.psedo;
-//            if (pid > 0)
+            env.client.name = env.psedo;
+            if (pid > 0)
                 ft_strcpy(env.address, "127.0.0.1");
-//            else TODO uncomment
-//            {
-//                printf("Please enter the server's hostname or ip: ");
-//                scanf("%s", env.address);
-//            }
+            else
+            {
+                printf("Please enter the server's hostname or ip: ");
+                scanf("%s", env.address);
+            }
             env.client.sock = connect_server(env.address, env.psedo);
             usleep(10000);
             while (!(ret = wait_start(env.client.sock)));
@@ -85,15 +85,10 @@ int		main(int argc, char  **argv)
                 exit(0);
             ft_putendl("reggae!!!");
             env.is_client = 1;
-//            while (1);
 		}
-//		if (pid > 0)
-//			kill(pid, 15);
 	}
 	if(SDL_Init(SDL_INIT_AUDIO) < 0)
-	{
 		return 1;
-	}
 	initAudio();
 	playMusic("resource/Tetris.wav", SDL_MIX_MAXVOLUME); // TODO uncomment
 	   while (render(&env));

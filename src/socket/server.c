@@ -131,7 +131,10 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
     char buffer[BUF_SIZE];
     char piece[3];
     piece[2] = 0;
+    struct timeval tv;
 
+    tv.tv_sec = 0;
+    tv.tv_usec = 500000;
     send_message_to_all(clients, actual, "start");
     while (1)
     {
@@ -146,15 +149,11 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
         {
             FD_SET(clients[i].sock, &rdfs);
         }
-        printf("actual: %d\n", actual);
-        printf("max: %d\n", max);
-        ft_putendl("befor selec");
         if(select(max + 1, &rdfs, NULL, NULL, NULL) == -1)
         {
             perror("select()");
             exit(errno);
         }
-        ft_putendl("after selec");
         if(FD_ISSET(sock, &rdfs))
             ft_putendl("new clien very bad");
         else
@@ -178,9 +177,8 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
                     {
                         if (!ft_strcmp(buffer, "gmp"))
                         {
-                            ft_putendl("go to send piece");
-                            piece[0] = (char)(rand() % 7);
-                            piece[1] = (char)(rand() % 4);
+                            piece[0] = (char) ((rand() % 7) + 1);
+                            piece[1] = (char) ((rand() % 4) + 1);
                             send_message_to(client, piece);
                         }
                     }
