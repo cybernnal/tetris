@@ -12,7 +12,7 @@
 
 #include <tetris.h>
 #include "tetris.h"
-
+ uint32_t color[7] = {0xFF0000, 0x00FFFF, 0xED7F10, 0xFFFF00, 0x00FF00, 0xAFAFAF, 0x0000FF};
 static void     draw_square(t_window *w, int x, int y, uint32_t color)
 {
 	int y2 = SQUARE_SIZE, x2 = 0;
@@ -273,7 +273,7 @@ static void         render_tet(t_window *w, t_env *env)
     if (env->is_client)
     {
         check_serv(env->client.sock, env);
-
+    }
 //	printf("current: x: %d, y: %d, p: %d\n", env->current.x, env->current.y, env->current.p);
 }
 

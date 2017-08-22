@@ -67,7 +67,7 @@ typedef struct
     char *name;
 }Client;
 
-uint32_t     color[7] = {0xFF0000, 0x00FFFF, 0xED7F10, 0xFFFF00, 0x00FF00, 0xAFAFAF, 0x0000FF};
+//uint32_t     col[7] = {0xFF0000, 0x00FFFF, 0xED7F10, 0xFFFF00, 0x00FF00, 0xAFAFAF, 0x0000FF};
 
 typedef struct          s_window
 {
