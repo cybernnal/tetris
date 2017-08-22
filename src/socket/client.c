@@ -116,8 +116,7 @@ int         wait_start(SOCKET sock)
         perror("select()");
         exit(errno);
     }
-    if (FD_ISSET(STDIN_FILENO, &rdfs));
-    else if (FD_ISSET(sock, &rdfs))
+    if (FD_ISSET(sock, &rdfs))
     {
         int n = read_server(sock, buffer);
         /* server down */

@@ -128,6 +128,7 @@ static void end_connection(int sock)
 static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLIENTS], fd_set rdfs)
 {
     int i;
+    int t;
     char buffer[BUF_SIZE];
     char piece[3];
     piece[2] = 0;
@@ -180,6 +181,11 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
                             piece[0] = (char) ((rand() % 7) + 1);
                             piece[1] = (char) ((rand() % 4) + 1);
                             send_message_to(client, piece);
+                        }
+                        else if (!ft_strncmp(buffer, "L", 1))
+                        {
+
+                            send_message_to_all_clients(clients, client, actual, buffer, 1);
                         }
                     }
                     break;

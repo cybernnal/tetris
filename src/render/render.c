@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <tetris.h>
 #include "tetris.h"
 
 static void     draw_square(t_window *w, int x, int y, uint32_t color)
@@ -156,9 +155,69 @@ static void         render_other(t_window *w)
     }
 }
 
+static void         add_line(t_env *e, int l)
+{
+    int r;
+
+    for (int i = 0 ; i < l ; i++)
+    {
+        for (int j = 0 ; j < MAP_X ; j++)
+        {
+            if (e->map[i][j] != 0)
+                ft_error("game over");
+        }
+    }
+    for (int i = l + 1; i < MAP_Y - l ; i++)
+    {
+        for (int j = 0 ; j < MAP_X ; j++)
+        {
+            e->map[i - l][j] = e->map[i][j];
+        }
+    }
+    for (int i = MAP_Y - l; i < MAP_Y ; i++)
+    {
+        for (int j = 0 ; j < MAP_X ; j++)
+        {
+            r = rand();
+            if (r % 2 == 0) {
+                r = rand() % 7;
+                e->map[i][j] = color[r];
+            }
+        }
+    }
+}
+
+static void         check_serv(SOCKET sock, t_env *e)
+{
+    char buffer[BUF_SIZE];
+    fd_set rdfs;
+
+    while (1)
+    {
+        FD_ZERO(&rdfs);
+        FD_SET(sock, &rdfs);
+        if (select(sock + 1, &rdfs, NULL, NULL, NULL) == -1) {
+            perror("select()");
+            exit(errno);
+        }
+        if (FD_ISSET(sock, &rdfs))
+        {
+            int n = read_server(sock, buffer);
+            if (n == 0)
+                ft_error("Server disconnected !");
+            if (ft_strncmp(buffer, "L", 1))
+                add_line(e, ft_atoi(buffer + 1));
+        }
+        else
+            break ;
+    }
+}
+
 static void         check_line(t_env *e)
 {
     int off = 0;
+    char *buf;
+    char *tmp;
 
     for (int i = MAP_Y - 1 ; i >= 0 ; i--)
     {
@@ -184,6 +243,17 @@ static void         check_line(t_env *e)
                 e->map[i + off][j] = e->map[i][j];
         }
     }
+    if (e->is_client) // TODO keep 2 or put 1 for send to server?
+    {
+        if (off > 2) {
+            buf = ft_itoa(off);
+            tmp = ft_strjoin("L", buf);
+            write_server(e->client.sock, tmp);
+            ft_memdel((void**)&buf);
+            ft_memdel((void**)&tmp);
+        }
+    }
+
 }
 
 static void         render_tet(t_window *w, t_env *env)
@@ -199,6 +269,10 @@ static void         render_tet(t_window *w, t_env *env)
 	render_map(w, env);
     render_other(w);
     check_line(env);
+    if (env->is_client)
+    {
+        check_serv();
+    }
 //	printf("current: x: %d, y: %d, p: %d\n", env->current.x, env->current.y, env->current.p);
 }
 

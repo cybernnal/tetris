@@ -66,15 +66,15 @@ int		main(int argc, char  **argv)
 				return (0);
 			}
 		}
-		if (pid > 0 || !ft_strcmp(argv[1], "-c")) {
-			printf("Please enter your psedo (max 10 char): ");
-			scanf("%s", env.psedo);
-			env.is_client = 1;
+		if (pid > 0 || !ft_strcmp(argv[1], "-c"))
+        {
+            printf("Please enter your psedo (max 10 char): ");
+            scanf("%s", env.psedo);
+            env.is_client = 1;
             env.client.name = env.psedo;
             if (pid > 0)
                 ft_strcpy(env.address, "127.0.0.1");
-            else
-            {
+            else {
                 printf("Please enter the server's hostname or ip: ");
                 scanf("%s", env.address);
             }
@@ -85,7 +85,7 @@ int		main(int argc, char  **argv)
                 exit(0);
             ft_putendl("reggae!!!");
             env.is_client = 1;
-		}
+        }
 	}
 	if(SDL_Init(SDL_INIT_AUDIO) < 0)
 		return 1;
