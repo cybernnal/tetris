@@ -137,8 +137,6 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
     {
         FD_ZERO(&rdfs);
 
-        /* add STDIN_FILENO */
-        FD_SET(STDIN_FILENO, &rdfs);
 
         /* add the connection socket */
         FD_SET(sock, &rdfs);
@@ -148,6 +146,8 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
         {
             FD_SET(clients[i].sock, &rdfs);
         }
+        printf("actual: %d\n", actual);
+        printf("max: %d\n", max);
         ft_putendl("befor selec");
         if(select(max + 1, &rdfs, NULL, NULL, NULL) == -1)
         {
@@ -155,13 +155,10 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
             exit(errno);
         }
         ft_putendl("after selec");
-        if(FD_ISSET(STDIN_FILENO, &rdfs))
-            ft_putendl("input from 0");
-        else if(FD_ISSET(sock, &rdfs))
+        if(FD_ISSET(sock, &rdfs))
             ft_putendl("new clien very bad");
         else
         {
-            ft_putendl("go to send piece");
             for(i = 0; i < actual; i++)
             {
 
@@ -181,6 +178,7 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
                     {
                         if (!ft_strcmp(buffer, "gmp"))
                         {
+                            ft_putendl("go to send piece");
                             piece[0] = (char)(rand() % 7);
                             piece[1] = (char)(rand() % 4);
                             send_message_to(client, piece);
