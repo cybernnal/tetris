@@ -100,31 +100,13 @@ static void         render_map(t_window *w, t_env *e)
 		{
 			if (e->map[i][j] > 0)
 			{
-				draw_square(w, X0 + ((j) * (SQUARE_SIZE + SQUARE_SPACE)), Y0 +  ((i + 1) * (SQUARE_SIZE + SQUARE_SPACE)), e->map[i][j]);
+				draw_square(w, X0 + ((j) * (SQUARE_SIZE + SQUARE_SPACE)), Y0 + ((i + 1) * (SQUARE_SIZE + SQUARE_SPACE)), e->map[i][j]);
 			}
 			j++;
 		}
 		j = 0;
 		i++;
 	}
-}
-
-static void         render_other(t_window *w)
-{
-    int x0 = X0 - SQUARE_SPACE;
-    int x1 = ((MAP_X + 3)  * (SQUARE_SIZE + SQUARE_SPACE))  + SQUARE_SPACE;
-    int y0 = Y0 - SQUARE_SPACE;
-    int y1 = (MAP_Y * (SQUARE_SIZE + SQUARE_SPACE)) + SQUARE_SPACE;
-
-    for (int i = y0; i <= y1 ; i++)
-    {
-        for (int j = x0; j <= x1 ; j++)
-        {
-            if (i == y0 || i == y1 || i == y0 - 1 || i == y1 - 1 || j == x0 || j == x1 || j == x0 - 1 || j == x1 - 1) {
-                draw_pixel(j, i, 0x7F7F7F, w);
-            }
-        }
-    }
 }
 
 static void         check_line(t_env *e)
@@ -157,6 +139,28 @@ static void         check_line(t_env *e)
                 e->map[i + off][j] = e->map[i][j];
         }
     }
+}
+
+static void         render_other(t_window *w)
+{
+	int x0 = X0 - SQUARE_SPACE;
+	int x1 = ((MAP_X + 2)* (SQUARE_SIZE + SQUARE_SPACE)) + SQUARE_SPACE * 4;
+	int y0 = Y0 - SQUARE_SPACE;
+	int y1 = (MAP_Y * (SQUARE_SIZE + SQUARE_SPACE)) + SQUARE_SPACE * 2;
+
+	for (int i = y0; i <= y1 ; i++)
+	{
+		for (int j = x0; j <= x1 ; j++)
+		{
+			if (i == y0 || i == y1 || j == x0 || j == x1) {
+				draw_pixel(j, i, 0x7F7F7F, w);
+			}
+//            if ((j - X0) % (SQUARE_SIZE + SQUARE_SPACE / 2) == 0)
+//                draw_pixel(j + SQUARE_SPACE , i , 0x7F7F7F, w);
+//			if ((i - y0) % SQUARE_SIZE == 0 || (j - x0) % SQUARE_SIZE == 0)
+//				draw_pixel(j + SQUARE_SPACE , i - SQUARE_SPACE, 0x7F7F7F, w);
+		}
+	}
 }
 
 static void         render_tet(t_window *w, t_env *env)
