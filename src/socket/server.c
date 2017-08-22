@@ -184,7 +184,6 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
                         }
                         else if (!ft_strncmp(buffer, "L", 1))
                         {
-                            ft_putendl("line rec");
                             send_message_to_all_clients(clients, client, actual, buffer, 1);
                         }
                         else

@@ -160,7 +160,6 @@ static void         add_line(t_env *e, int l)
 {
     int r = MAP_Y - l;
 
-    ft_putendl("yolo");
     delete_piece(e);
     for (int i = 0 ; i < MAP_Y - l ; i++)
     {
@@ -174,7 +173,6 @@ static void         add_line(t_env *e, int l)
         if (r == i)
             break ;
     }
-    printf("r: %d, l: %d\n", r, l);
     for (int i = r; i < MAP_Y - l ; i++)
     {
         for (int j = 0 ; j < MAP_X ; j++)
@@ -215,7 +213,6 @@ static void         check_serv(SOCKET sock, t_env *e)
         }
         if (FD_ISSET(sock, &rdfs))
         {
-            ft_putendl("here!!!!!");
             int n = read_server(sock, buffer);
             if (n == 0)
                 ft_error("Server disconnected !");
@@ -267,7 +264,6 @@ static void         check_line(t_env *e)
             buf = ft_itoa(off - 1);
             tmp = ft_strjoin("L", buf);
             write_server(e->client.sock, tmp);
-            ft_putendl("line sent");
             ft_memdel((void**)&buf);
             ft_memdel((void**)&tmp);
         }
