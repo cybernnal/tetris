@@ -32,10 +32,12 @@ server:
         fork for let a client to play // TODO DONE
         retrieve psedo // TODO DONE
         wait all client // TODO DONE
-        send piece to clien // TODO DONE
-        check clien with special key?
+        send piece to client // TODO DONE
+        check client with special key?
         save all client's map?
         check for cheat?
         send score to other client ?
         send map to other client?
         retrieve line from client and send if needed random line to over
+        kill correctly the server
+        error bind address already used
