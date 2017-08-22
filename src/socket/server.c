@@ -178,15 +178,17 @@ static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLI
                     {
                         if (!ft_strcmp(buffer, "gmp"))
                         {
-                            piece[0] = (char) ((rand() % 7) + 1);
+                            piece[0] = 2;//(char) ((rand() % 7) + 1);
                             piece[1] = (char) ((rand() % 4) + 1);
                             send_message_to(client, piece);
                         }
                         else if (!ft_strncmp(buffer, "L", 1))
                         {
-
+                            ft_putendl("line rec");
                             send_message_to_all_clients(clients, client, actual, buffer, 1);
                         }
+                        else
+                            ft_putendl(buffer);
                     }
                     break;
                 }

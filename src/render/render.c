@@ -158,27 +158,35 @@ static void         render_other(t_window *w)
 
 static void         add_line(t_env *e, int l)
 {
-    int r;
+    int r = MAP_Y - l;
 
-    for (int i = 0 ; i < l ; i++)
+    ft_putendl("yolo");
+    delete_piece(e);
+    for (int i = 0 ; i < MAP_Y - l ; i++)
     {
         for (int j = 0 ; j < MAP_X ; j++)
         {
-            if (e->map[i][j] != 0)
-                ft_error("game over");
+            if (e->map[i][j] != 0) {
+                r = i;
+                break;
+            }
         }
+        if (r == i)
+            break ;
     }
-    for (int i = l + 1; i < MAP_Y - l ; i++)
+    printf("r: %d, l: %d\n", r, l);
+    for (int i = r; i < MAP_Y - l ; i++)
     {
         for (int j = 0 ; j < MAP_X ; j++)
         {
             e->map[i - l][j] = e->map[i][j];
         }
     }
-    for (int i = MAP_Y - l; i < MAP_Y ; i++)
+    for (int i = MAP_Y - l ; i < MAP_Y ; i++)
     {
         for (int j = 0 ; j < MAP_X ; j++)
         {
+            e->map[i][j] = 0;
             r = rand();
             if (r % 2 == 0) {
                 r = rand() % 7;
@@ -186,6 +194,7 @@ static void         add_line(t_env *e, int l)
             }
         }
     }
+    put_piece(e);
 }
 
 static void         check_serv(SOCKET sock, t_env *e)
@@ -206,11 +215,14 @@ static void         check_serv(SOCKET sock, t_env *e)
         }
         if (FD_ISSET(sock, &rdfs))
         {
+            ft_putendl("here!!!!!");
             int n = read_server(sock, buffer);
             if (n == 0)
                 ft_error("Server disconnected !");
-            if (ft_strncmp(buffer, "L", 1))
+            if (buffer[0] == 'L')
                 add_line(e, ft_atoi(buffer + 1));
+            else
+                printf("bufff: %s\n", buffer);
         }
         else
             break ;
@@ -223,6 +235,8 @@ static void         check_line(t_env *e)
     char *buf;
     char *tmp;
 
+    if (check_down(e) == 0)
+        return;
     for (int i = MAP_Y - 1 ; i >= 0 ; i--)
     {
         int is_full = 0;
@@ -249,10 +263,11 @@ static void         check_line(t_env *e)
     }
     if (e->is_client) // TODO keep 2 or put 1 for send to server?
     {
-        if (off > 2) {
-            buf = ft_itoa(off);
+        if (off >= 2) {
+            buf = ft_itoa(off - 1);
             tmp = ft_strjoin("L", buf);
             write_server(e->client.sock, tmp);
+            ft_putendl("line sent");
             ft_memdel((void**)&buf);
             ft_memdel((void**)&tmp);
         }
