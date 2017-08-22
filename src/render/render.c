@@ -192,12 +192,15 @@ static void         check_serv(SOCKET sock, t_env *e)
 {
     char buffer[BUF_SIZE];
     fd_set rdfs;
+    struct timeval tv;
 
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;
     while (1)
     {
         FD_ZERO(&rdfs);
         FD_SET(sock, &rdfs);
-        if (select(sock + 1, &rdfs, NULL, NULL, NULL) == -1) {
+        if (select(sock + 1, &rdfs, NULL, NULL, &tv) == -1) {
             perror("select()");
             exit(errno);
         }
