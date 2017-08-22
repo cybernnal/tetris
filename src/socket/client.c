@@ -1,25 +1,7 @@
 //
 // Created by tom billard on 21/08/2017.
 //
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h> /* gethostbyname */
 #include "tetris.h"
-
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR -1
-#define closesocket(s) close(s)
-
-
-#define PORT	 1977
-
-#define BUF_SIZE 1024
-
-typedef int SOCKET;
-typedef struct sockaddr_in SOCKADDR_IN;
-typedef struct sockaddr SOCKADDR;
-typedef struct in_addr IN_ADDR;
 
 static int init_connection(const char *address)
 {
@@ -53,44 +35,21 @@ static int init_connection(const char *address)
     return sock;
 }
 
-static void write_server(SOCKET sock, const char *buffer)
-{
-    if(send(sock, buffer, strlen(buffer), 0) < 0)
-    {
-        perror("send()");
-        exit(errno);
-    }
-}
-
 static void end_connection(int sock)
 {
     closesocket(sock);
 }
 
-static int read_server(SOCKET sock, char *buffer)
+
+void app_client(const char *address, const char *name, SOCKET sock)
 {
-    int n = 0;
-
-    if((n = (int)recv(sock, buffer, BUF_SIZE - 1, 0)) < 0)
-    {
-        perror("recv()");
-        exit(errno);
-    }
-
-    buffer[n] = 0;
-
-    return n;
-}
-
-static void app(const char *address, const char *name)
-{
-    SOCKET sock = init_connection(address);
+//    SOCKET sock = init_connection(address);
     char buffer[BUF_SIZE];
 
     fd_set rdfs;
 
     /* send our name */
-    write_server(sock, name);
+//    write_server(sock, name);
 
     while(1)
     {
@@ -143,15 +102,41 @@ static void app(const char *address, const char *name)
     end_connection(sock);
 }
 
-int main(int argc, char **argv)
+int         wait_start(SOCKET sock)
 {
-    if(argc < 2)
-    {
-        printf("Usage : %s [address] [pseudo]\n", argv[0]);
-        return EXIT_FAILURE;
+    char buffer[BUF_SIZE];
+    fd_set rdfs;
+
+    FD_ZERO(&rdfs);
+
+    /* add the socket */
+    FD_SET(sock, &rdfs);
+
+    if (select(sock + 1, &rdfs, NULL, NULL, NULL) == -1) {
+        perror("select()");
+        exit(errno);
     }
+    if (FD_ISSET(STDIN_FILENO, &rdfs));
+    else if (FD_ISSET(sock, &rdfs))
+    {
+        int n = read_server(sock, buffer);
+        /* server down */
+        if (n == 0) {
+            printf("Server disconnected !\n");
+            return (-1);
+        }
+        if (ft_strcmp(buffer, "start"))
+            printf("buf: |%s|\n", buffer);
+        else
+            return (1);
+    }
+    return (0);
+}
 
-    app(argv[1], argv[2]);
+SOCKET        connect_server(const char *address, const char *name)
+{
+    SOCKET sock = init_connection(address);
 
-    return EXIT_SUCCESS;
+    write_server(sock, name);
+    return (sock);
 }

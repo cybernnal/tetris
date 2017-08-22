@@ -18,6 +18,11 @@
 #include "audio.h"
 #include <time.h>
 #include "SDL.h"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
 #define WIN_X   900
 #define WIN_Y   1050
@@ -38,6 +43,30 @@
 
 #define SQUARE_SIZE 36
 #define SQUARE_SPACE 5
+
+#define BUF_SIZE	1024
+
+#define PSEDO_LEN   11
+
+#define PORT	 1977
+
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+#define closesocket(s) close(s)
+
+#define MAX_CLIENTS 	7
+
+typedef int SOCKET;
+typedef struct sockaddr_in SOCKADDR_IN;
+typedef struct sockaddr SOCKADDR;
+typedef struct in_addr IN_ADDR;
+
+typedef struct
+{
+    SOCKET sock;
+    char *name;
+}Client;
+
 
 typedef struct          s_window
 {
@@ -70,11 +99,16 @@ typedef struct          s_current
 
 typedef struct		    s_env
 {
+    int                 pid;
+    char                *address;
+    int                 is_client;
+    char                *psedo;
 	struct s_piece		**p;
     uint32_t            map[MAP_Y][MAP_X];
     struct s_current    current;
 	int 				mute;
     float               duration;
+    Client              client;
 }			    		t_env;
 
 void			        init_lst(t_env *e);
@@ -94,4 +128,12 @@ int                     check_right(t_env *env);
 int                     check_left(t_env *env);
 int                     check_rleft(t_env *env, uint32_t piece[4][4]);
 int                     check_rright(t_env *env, uint32_t piece[4][4]);
+
+void                    appserv(void);
+void                    app_client(const char *address, const char *name, SOCKET sock);
+SOCKET                  connect_server(const char *address, const char *name);
+int                     wait_start(SOCKET sock);
+void                    write_server(SOCKET sock, const char *buffer);
+int                     read_server(SOCKET sock, char *buffer);
+
 #endif

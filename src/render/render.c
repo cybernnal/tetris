@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <tetris.h>
 #include "tetris.h"
 
 static void     draw_square(t_window *w, int x, int y, uint32_t color)
@@ -35,10 +36,27 @@ static void     save_time(t_env *e)
 
 static void     pop_piece(t_env *e)
 {
-	int r = rand() % 4;
-	int p = rand() % 7;
+	int r;
+	int p;
 	int x = (MAP_X / 2) - 2;
 	int i = 0;
+    char buf[3];
+
+	if (e->is_client == 1)
+	{
+		write_server(e->client.sock, "gmp");
+        ft_putendl("ask to serv to send piece");
+        read_server(e->client.sock, buf);
+        ft_putendl("piece receded");
+        buf[2] = 0;
+        p = buf[0];
+        r = buf[1];
+	}
+	else
+	{
+		r = rand() % 4;
+		p = rand() % 7;
+	}
 
 	ft_memset(&e->current, -1, sizeof(t_current));
     e->current.p = p;
@@ -64,6 +82,17 @@ static void         go_down(t_env *e)
 		if (check_down(e) == 1)
 		{
 			ft_putendl("game over");
+            for (int i = 0 ; i < MAP_Y ; i++)
+            {
+                for (int j = 0 ; j < MAP_X ; j++)
+                {
+                    if (e->map[i][j])
+                        printf("1 ");
+                    else
+                        printf("0 ");
+                }
+                printf("\n");
+            }
 			exit(0);
 		}
 		delete_piece(e);

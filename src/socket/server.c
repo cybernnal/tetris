@@ -2,33 +2,8 @@
 // Created by tom billard on 21/08/2017.
 //
 
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h> /* close */
+#include <tetris.h>
 #include "tetris.h"
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR -1
-#define closesocket(s) close(s)
-typedef int SOCKET;
-typedef struct sockaddr_in SOCKADDR_IN;
-typedef struct sockaddr SOCKADDR;
-typedef struct in_addr IN_ADDR;
-
-
-#define PORT	 	1977
-#define MAX_CLIENTS 	100
-
-#define BUF_SIZE	1024
-
-
-typedef struct
-{
-    SOCKET sock;
-    char name[BUF_SIZE];
-}Client;
 
 static int init_connection(void)
 {
@@ -107,12 +82,33 @@ static void send_message_to_all_clients(Client *clients, Client sender, int actu
             if(from_server == 0)
             {
                 strncpy(message, sender.name, BUF_SIZE - 1);
-                strncat(message, " : ", sizeof message - strlen(message) - 1);
+                strncat(message, " is now connected.", sizeof message - strlen(message) - 1);
             }
             strncat(message, buffer, sizeof message - strlen(message) - 1);
             write_client(clients[i].sock, message);
         }
     }
+}
+
+static void send_message_to_all(Client *clients, int actual, const char *buffer)
+{
+    int i = 0;
+    char message[BUF_SIZE];
+    message[0] = 0;
+    for(i = 0; i < actual; i++)
+    {
+        strcpy(message, buffer);
+        write_client(clients[i].sock, message);
+    }
+}
+
+static void send_message_to(Client clients, const char *buffer)
+{
+    char message[BUF_SIZE];
+
+    message[0] = 0;
+    strcpy(message, buffer);
+    write_client(clients.sock, message);
 }
 
 static void clear_clients(Client *clients, int actual)
@@ -129,13 +125,83 @@ static void end_connection(int sock)
     closesocket(sock);
 }
 
-static void appserv(void)
+static void game_server(int max, int actual, SOCKET sock, Client clients[MAX_CLIENTS], fd_set rdfs)
+{
+    int i;
+    char buffer[BUF_SIZE];
+    char piece[3];
+    piece[2] = 0;
+
+    send_message_to_all(clients, actual, "start");
+    while (1)
+    {
+        FD_ZERO(&rdfs);
+
+        /* add STDIN_FILENO */
+        FD_SET(STDIN_FILENO, &rdfs);
+
+        /* add the connection socket */
+        FD_SET(sock, &rdfs);
+
+        /* add socket of each client */
+        for(i = 0; i < actual; i++)
+        {
+            FD_SET(clients[i].sock, &rdfs);
+        }
+        ft_putendl("befor selec");
+        if(select(max + 1, &rdfs, NULL, NULL, NULL) == -1)
+        {
+            perror("select()");
+            exit(errno);
+        }
+        ft_putendl("after selec");
+        if(FD_ISSET(STDIN_FILENO, &rdfs))
+            ft_putendl("input from 0");
+        else if(FD_ISSET(sock, &rdfs))
+            ft_putendl("new clien very bad");
+        else
+        {
+            ft_putendl("go to send piece");
+            for(i = 0; i < actual; i++)
+            {
+
+                if(FD_ISSET(clients[i].sock, &rdfs))
+                {
+                    Client client = clients[i];
+                    int c = read_client(clients[i].sock, buffer);
+                    if(c == 0)
+                    {
+                        closesocket(clients[i].sock);
+                        remove_client(clients, i, &actual);
+                        strncpy(buffer, client.name, BUF_SIZE - 1);
+                        strncat(buffer, " disconnected !", BUF_SIZE - strlen(buffer) - 1);
+                        send_message_to_all_clients(clients, client, actual, buffer, 1);
+                    }
+                    else
+                    {
+                        if (!ft_strcmp(buffer, "gmp"))
+                        {
+                            piece[0] = (char)(rand() % 7);
+                            piece[1] = (char)(rand() % 4);
+                            send_message_to(client, piece);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void appserv(void)
 {
     SOCKET sock = init_connection();
     char buffer[BUF_SIZE];
+    int i;
     /* the index for the array */
     int actual = 0;
     int max = sock;
+    int cli = 0;
     /* an array for all clients */
     Client clients[MAX_CLIENTS];
 
@@ -143,7 +209,6 @@ static void appserv(void)
 
     while(1)
     {
-        int i = 0;
         FD_ZERO(&rdfs);
 
         /* add STDIN_FILENO */
@@ -164,14 +229,9 @@ static void appserv(void)
             exit(errno);
         }
 
-        /* something from standard input : i.e keyboard */
-        if(FD_ISSET(STDIN_FILENO, &rdfs))
+        if(FD_ISSET(sock, &rdfs))
         {
-            /* stop process when type on keyboard */
-            break;
-        }
-        else if(FD_ISSET(sock, &rdfs))
-        {
+            cli = 1;
             /* new client */
             SOCKADDR_IN csin = { 0 };
             size_t sinsize = sizeof csin;
@@ -188,27 +248,59 @@ static void appserv(void)
                 /* disconnected */
                 continue;
             }
+            printf("new clien: %s, number: %d\n", buffer, actual);
 
             /* what is the new maximum fd ? */
             max = csock > max ? csock : max;
-
             FD_SET(csock, &rdfs);
-
             Client c = { csock };
-            strncpy(c.name, buffer, BUF_SIZE - 1);
+            c.name = ft_strdup(buffer);
             clients[actual] = c;
+            send_message_to_all(clients, actual, "");
             actual++;
         }
-        else
+        /* something from standard input : i.e keyboard */
+        else if(FD_ISSET(STDIN_FILENO, &rdfs) && cli == 1)
+        {
+            //TODO input on server if == start start the game
+            i = (int)read(STDIN_FILENO, buffer, BUF_SIZE);
+            buffer[i - 1] = 0;
+            if (!strcmp("start", buffer))
+            {
+                printf("Start the game\n"); // TODO start the game here
+                game_server(max, actual, sock, clients, rdfs);
+                clear_clients(clients, actual);
+                end_connection(sock);
+            }
+            else if (!strcmp("quit", buffer))
+            {
+                printf("Quiting game.\n");
+                break ;
+            }
+            else if (!strcmp("print", buffer))
+            {
+                for(i = 0; i < actual; i++)
+                {
+                    printf("%s\n", clients[i].name);
+                }
+                continue;
+            }
+            else
+            {
+                printf("please if all player are present type 'start' and enter for start the game: %s\n", buffer);
+                continue;
+            }
+        }
+        /*else
         {
             for(i = 0; i < actual; i++)
             {
-                /* a client is talking */
+
                 if(FD_ISSET(clients[i].sock, &rdfs))
                 {
                     Client client = clients[i];
                     int c = read_client(clients[i].sock, buffer);
-                    /* client disconnected */
+
                     if(c == 0)
                     {
                         closesocket(clients[i].sock);
@@ -224,15 +316,8 @@ static void appserv(void)
                     break;
                 }
             }
-        }
+        }*/
     }
-
     clear_clients(clients, actual);
     end_connection(sock);
-}
-
-int main(int argc, char **argv)
-{
-    appserv();
-    return EXIT_SUCCESS;
 }
