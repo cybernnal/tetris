@@ -22,13 +22,13 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <netdb.h>
+//#include <SDL_ttf.h>
 
+#include <netdb.h>
 #define WIN_X   900
 #define WIN_Y   1050
-#define MARGE   10
 
-#include <SDL_ttf.h>
+#define MARGE   10
 #define WIN_X1   WIN_X - MARGE
 #define WIN_Y1   WIN_Y - MARGE
 
