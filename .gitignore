@@ -34,5 +34,10 @@
 *.dSYM/
 *.su
 .idea
-Supprimerait .gitignore
-./fdf
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake-build-debug/
+cmake_install.cmake
+libft/obj/
+tetris

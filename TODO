@@ -1,20 +1,20 @@
 //  TODO
 
 fix popping of piece
-fix rotation at bottom
+fix rotation at bottom // TODO DONE
 fix border
 fix windows position/size
 fix square size/space
 fix graphics scalability
 
 add timer (total game time)
-add score
-add level
+add score // TODO DONE
+add level // TODO DONE // NEED TO FIX
 add "pause"
 
 fill lst with rotation algo
 
-add multilayer on lan:
+add multilayer on lan: // TODO DONE
 
 client:
 
@@ -22,9 +22,9 @@ client:
         connect to server // TODO DONE
         wait all client (server or client start game) // TODO DONE
         retrieve line from server if other player do more than 2 line // TODO DONE
+        send if doing line // TODO DONE
         send all move ??
         send score !!
-        send if doing line
 
         retrieve other screen ???
 
@@ -43,4 +43,4 @@ server:
         send map to other client?
         kill correctly the server
         error bind address already used
-        if clien disconect keep all the game, delete just him
+        if clien disconect keep all the game, delete just him // DONE ???
